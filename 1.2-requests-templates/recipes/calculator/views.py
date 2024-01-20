@@ -1,3 +1,7 @@
+"""
+Django view functions
+"""
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 
 DATA = {
@@ -28,3 +32,27 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+
+
+def recipes_view(request, recipe):
+    """
+    View-функция страницы рецепта
+    """
+    ingredients = DATA.get(recipe, {}).copy()
+    if not ingredients:
+        return HttpResponseNotFound("Такого рецепта не знаю :(")
+
+    servings_str = request.GET.get("servings", "1")
+    if not servings_str.isdigit():
+        return HttpResponse(
+            "Передано некорректное количество порций", status=400, reason="Incorrect data"
+        )
+    servings = int(servings_str)
+    if servings <= 0:
+        return HttpResponse(
+            "Количество порций должно быть положительным", status=400, reason="Incorrect data"
+        )
+
+    for ingredient in ingredients:
+        ingredients[ingredient] *= servings
+    return render(request, 'calculator/index.html', {'recipe': ingredients})
