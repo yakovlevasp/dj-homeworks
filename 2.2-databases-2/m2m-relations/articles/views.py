@@ -1,14 +1,20 @@
+"""
+View-функции
+"""
 from django.shortcuts import render
+from django.db.models import Prefetch
 
-from articles.models import Article
+from articles.models import Article, Scope
 
 
 def articles_list(request):
+    """
+    View-функция страницы новостей
+    """
     template = 'articles/news.html'
-    context = {}
-
-    # используйте этот параметр для упорядочивания результатов
-    # https://docs.djangoproject.com/en/3.1/ref/models/querysets/#django.db.models.query.QuerySet.order_by
-    ordering = '-published_at'
-
+    context = {
+        'object_list': Article.objects.prefetch_related(
+            Prefetch('scopes', queryset=Scope.objects.order_by('-is_main', 'tag__name'))
+        )
+    }
     return render(request, template, context)
