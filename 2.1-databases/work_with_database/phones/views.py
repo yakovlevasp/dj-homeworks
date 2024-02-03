@@ -6,6 +6,13 @@ from django.shortcuts import render, redirect
 from phones.models import Phone
 
 
+SORT_MAP = {
+    'name': 'name',
+    'min_price': 'price',
+    'max_price': '-price',
+}
+
+
 def index(request):
     """
     View-функция главной страницы. Перенаправление на каталог
@@ -18,19 +25,13 @@ def show_catalog(request):
     View-функция страницы каталога телефонов
     """
     template = 'catalog.html'
-    sort_type = request.GET.get('sort')
-    order = ()
-    if sort_type == 'name':
-        order = ('name',)
-    elif sort_type == 'min_price':
-        order = ('price',)
-    elif sort_type == 'max_price':
-        order = ('-price',)
 
-    context = {
-        'phones': Phone.objects.order_by(*order)
-    }
-    return render(request, template, context)
+    phones = Phone.objects.all()
+    sort = request.GET.get('sort')
+    if sort:
+        phones = phones.order_by(SORT_MAP[sort])
+
+    return render(request, template, {'phones': phones})
 
 
 def show_product(request, slug):
