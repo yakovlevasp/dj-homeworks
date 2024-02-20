@@ -40,7 +40,11 @@ class StockSerializer(serializers.ModelSerializer):
         Заполнение связанной таблицы StockProduct
         """
         for position in positions:
-            StockProduct.objects.update_or_create(stock=stock, **position)
+            StockProduct.objects.update_or_create(
+                stock=stock,
+                product=position['product'],
+                defaults={'price': position['price'], 'quantity': position['quantity']}
+            )
 
     def create(self, validated_data):
         """
