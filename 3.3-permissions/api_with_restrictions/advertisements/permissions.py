@@ -6,7 +6,7 @@ from rest_framework.permissions import BasePermission
 
 class IsAdminOrOwner(BasePermission):
     """
-    Разделение доступа на уровне объекта, позволяет редактировать объект только админ или владельцам
+    Разделение доступа на уровне объекта, позволяет редактировать объект только админам или владельцам
     """
     def has_object_permission(self, request, view, obj):
         """
