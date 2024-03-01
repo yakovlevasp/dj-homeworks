@@ -46,7 +46,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
             creator_id=self.context["request"].user.id,
             status=AdvertisementStatusChoices.OPEN
         ).count()
-        if opened_count > settings.MAX_OPENED_ADVERTISEMENTS_COUNT:
+        if opened_count > settings.MAX_OPENED_ADVERTISEMENTS_COUNT and data.get('status') == 'OPEN':
             raise serializers.ValidationError("The number of open advertisements has been exceeded")
 
         return data
