@@ -15,5 +15,5 @@ class CourseSerializer(serializers.ModelSerializer):
         Проверка количества студентов на курсе
         """
         if len(set(value)) > settings.MAX_STUDENTS_PER_COURSE:
-            raise ValidationError(f"Number of students per course exceeded {settings.MAX_STUDENTS_PER_COURSE}")
+            raise ValidationError("Number of students per course exceeded")
         return value
